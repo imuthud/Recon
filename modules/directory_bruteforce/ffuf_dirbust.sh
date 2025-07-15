@@ -1,5 +1,5 @@
 #!/bin/bash
-input="output/resolved_subdomains.txt"
+input="output/http_subdomains.txt"
 wordlist="wordlists/common.txt"
 mkdir -p output/ffuf
 
