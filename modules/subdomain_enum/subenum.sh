@@ -13,15 +13,6 @@ echo "[*] Subdomain Enumeration for $domain"
 subfinder -d $domain -silent > output/subfinder.txt &
 assetfinder --subs-only $domain > output/assetfinder.txt &
 
-# crt.sh + jq
-(
-    crtsh=$(curl -s "https://crt.sh/?q=%25.$domain&output=json")
-    if echo "$crtsh" | jq empty 2>/dev/null; then
-        echo "$crtsh" | jq -r '.[].name_value'
-    else
-        echo "[!] crt.sh returned invalid JSON, skipping..." >&2
-    fi
-) > output/crtsh.txt &
 
 # Optional: Findomain
 if command -v findomain &> /dev/null; then
