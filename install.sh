@@ -1,4 +1,11 @@
 #!/bin/bash
+sudo apt update && sudo apt install -y jq wget unzip curl
+
+# Install findomain
+wget https://github.com/Findomain/Findomain/releases/latest/download/findomain-linux.zip -O findomain.zip
+unzip findomain.zip
+chmod +x findomain
+sudo mv findomain /usr/local/bin/
 
 echo "[*] Adding Go binary path to shell config..."
 echo 'export PATH=$PATH:$HOME/go/bin' >> ~/.bashrc
