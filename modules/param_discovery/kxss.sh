@@ -1,12 +1,13 @@
 #!/bin/bash
+
 input="output/all_urls.txt"
-output="output/kxss_reflections.txt"
 mkdir -p output
 
-echo "[*] Filtering URLs with parameters..."
-cat $input | grep '?' | sort -u > output/urls_with_params.txt
+echo "[*] Filtering URLs with XSS patterns using gf..."
+cat $input | gf xss | sort -u > output/gf_xss_urls.txt
 
-echo "[*] Running KXSS on URLs with parameters..."
-cat output/urls_with_params.txt | kxss > $output
+echo "[*] Running KXSS on filtered URLs..."
+cat output/gf_xss_urls.txt | kxss > output/kxss_reflections.txt
 
-echo "[✔] KXSS reflections saved to $output"
+echo "[✔] XSS reflection scan completed."
+echo " → KXSS results: output/kxss_reflections.txt"
