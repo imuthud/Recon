@@ -20,4 +20,12 @@ go install github.com/Emoe/kxss@latest
 echo "[*] Installing Python dependencies for LinkFinder..."
 pip install -r tools/LinkFinder/requirements.txt --break-system-packages
 
+echo "[*] Installing Python tools..."
+
+# Install arjun
+pip install --break-system-packages arjun
+
+# Install qsreplace (if using pip instead of Go)
+pip install --break-system-packages qsreplace
+
 echo "[✔] All tools installed successfully and globally available."
