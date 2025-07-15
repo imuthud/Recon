@@ -6,31 +6,44 @@ mkdir -p output
 
 echo "[*] Subdomain Enumeration for $domain"
 
-# Subdomain tools
-subfinder -d $domain -silent >> $output
-assetfinder --subs-only $domain >> $output
-crtsh=$(curl -s "https://crt.sh/?q=%25.$domain&output=json")
-if echo "$crtsh" | jq empty 2>/dev/null; then
-    echo "$crtsh" | jq -r '.[].name_value' >> $output
-else
-    echo "[!] crt.sh returned invalid JSON, skipping..."
-fi
+# Clear previous output
+> $output
+
+# Subdomain tools in parallel
+subfinder -d $domain -silent > output/subfinder.txt &
+assetfinder --subs-only $domain > output/assetfinder.txt &
+
+# crt.sh + jq
+(
+    crtsh=$(curl -s "https://crt.sh/?q=%25.$domain&output=json")
+    if echo "$crtsh" | jq empty 2>/dev/null; then
+        echo "$crtsh" | jq -r '.[].name_value'
+    else
+        echo "[!] crt.sh returned invalid JSON, skipping..." >&2
+    fi
+) > output/crtsh.txt &
+
 # Optional: Findomain
 if command -v findomain &> /dev/null; then
-    findomain -t $domain -q >> $output
+    findomain -t $domain -q > output/findomain.txt &
 else
     echo "[!] findomain not found. Skipping..."
 fi
 
-# Remove duplicates
-sort -u $output -o $output
+# Wait for all parallel jobs to finish
+wait
 
-# Clean DNS results (in case you run dnsx later)
-cat $output | dnsx -silent > output/resolved_dnsx.txt
+# Combine and deduplicate
+cat output/*.txt | sort -u > $output
+
+# DNS resolution
+dnsx -l $output -silent -a -resp-only > output/resolved_dnsx.txt
 cat output/resolved_dnsx.txt | awk '{print $1}' | sort -u > output/clean_subdomains.txt
 
-# Create http/https version
+# Create http(s) URLs
 cat output/clean_subdomains.txt | while read sub; do
     echo "http://$sub"
     echo "https://$sub"
 done > output/http_subdomains.txt
+
+echo "[✔] Subdomain Enumeration Completed. Results saved in output/"
