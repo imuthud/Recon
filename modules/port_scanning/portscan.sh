@@ -1,16 +1,24 @@
 #!/bin/bash
 
-input="output/clean_subdomains.txt"
+input="output/resolved_ips.txt"
 temp="output/portscan"
 mkdir -p $temp
 
-echo "[*] Resolving IPs from subdomains using dnsx..."
-dnsx -l $input -silent -a -resp-only | tee $temp/dnsx_raw.txt
+echo "[*] Starting Port Scan using IPs from $input..."
 
-echo "[*] Extracting only IPs from dnsx output..."
-cat $temp/dnsx_raw.txt | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' | sort -u > $temp/ips.txt
+# Validate IP list
+if [[ ! -s $input ]]; then
+    echo "[!] No IPs found in $input. Exiting..."
+    exit 1
+fi
 
-echo "[*] Scanning open ports using naabu..."
+# Copy IPs to portscan dir
+cp $input $temp/ips.txt
+
+echo "[+] Found $(wc -l < $temp/ips.txt) unique IPs"
+
+echo "[*] Scanning top 1000 ports with naabu..."
 naabu -iL $temp/ips.txt -top-ports 1000 -silent -o $temp/naabu_ports.txt
 
-echo "[✔] Port scan results saved to $temp/naabu_ports.txt"
+echo "[✔] Port scan complete. Results saved to:"
+echo "     → $temp/naabu_ports.txt"
