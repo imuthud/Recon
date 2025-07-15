@@ -2,7 +2,7 @@
 
 echo "[*] Updating system and installing dependencies..."
 sudo apt update && sudo apt install -y jq wget unzip curl python3-pip
-
+sudo apt install eyewitness -y
 # Make tools directory if not exists
 mkdir -p tools
 
