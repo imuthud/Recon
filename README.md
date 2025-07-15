@@ -1,54 +1,58 @@
-Here’s your updated `README.md` tailored to your `Recon` GitHub project, with clear sections for:
+Here’s your **updated `README.md`** reflecting all the latest changes:
 
-* ✅ Features & tools
-* 🚀 How to use (`run_all.sh`)
-* ⚙️ What's automatic
-* ✍️ What requires manual input
+* ✅ Cleaned subdomain formatting
+* ✅ Updated input logic for URL tools
+* ✅ Clarified `dnsx` output handling for port scanning
+* ✅ New file structure and flow
 
 ---
 
-### ✅ Updated `README.md`
+## ✅ `README.md` – Final Updated Version
 
 ````markdown
 # 🔍 Recon - Bug Bounty Recon Automation Toolkit
 
-A powerful and modular recon toolkit for bug bounty hunting. Combines subdomain enumeration, URL discovery, JS analysis, parameter fuzzing, port scanning, and more — using only open-source tools.
+An advanced and modular recon toolkit designed for bug bounty hunting and web app security testing. Includes subdomain enumeration, URL crawling, JS analysis, parameter discovery, CVE detection, sensitive file checks, port scanning, and more — powered by open-source tools.
 
 ---
 
 ## 🛠️ Features
 
-| Task                          | Tool(s) Used                                          |
-|-------------------------------|--------------------------------------------------------|
-| Subdomain Enumeration         | `subfinder`, `assetfinder`, `amass`, `findomain`       |
-| URL Collection                | `gau`, `waybackurls`, `hakrawler`, `katana`            |
-| JS Endpoint Discovery         | `grep`, `LinkFinder`                                   |
-| Parameter Discovery           | `arjun`, `gf`, `qsreplace`                             |
-| Vulnerability Scanning       | `nuclei` with CVEs + vuln templates                    |
-| Port Scanning                 | `dnsx` + `naabu`                                       |
-| Visual Recon (optional)      | `aquatone`                                             |
-| Subdomain Takeover           | `subzy` (manual)                                       |
-| Sensitive File/Extension Grep| `grep`                                                 |
-| SSRF & Redirect Checks       | `gf`, `qsreplace`                                      |
-| DOM XSS Detection            | `curl` + regex on JS files                             |
+| Task                        | Tools Used                                                       |
+|-----------------------------|------------------------------------------------------------------|
+| Subdomain Enumeration       | subfinder, assetfinder, amass, findomain                        |
+| DNS Resolution              | dnsx                                                             |
+| URL Crawling                | gau, waybackurls, hakrawler, katana                             |
+| JS Analysis                 | grep, LinkFinder                                                |
+| Parameter Discovery         | arjun, gf, qsreplace                                             |
+| Vulnerability Scanning      | nuclei with CVE + vuln templates                                |
+| Sensitive File Discovery    | grep                                                             |
+| SSRF/Open Redirect Fuzzing  | gf, qsreplace                                                    |
+| DOM XSS Pattern Detection   | curl + regex                                                    |
+| Port Scanning               | dnsx + naabu                                                    |
+| Visual Recon (optional)     | aquatone                                                         |
+| Subdomain Takeover (manual) | subzy                                                           |
 
 ---
 
-## 🚀 How to Use (Step-by-Step)
+## 🚀 Usage Instructions
 
-### 1. Clone the Repo
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/imuthud/Recon.git
 cd Recon
 ````
 
-### 2. Install All Tools
+### 2. Install Dependencies
 
 ```bash
 bash install.sh
 ```
 
-### 3. Run Everything with One Command
+> This installs all required Go/Python tools like subfinder, naabu, nuclei, etc.
+
+### 3. Run All Modules
 
 ```bash
 bash run_all.sh apple.com
@@ -57,76 +61,64 @@ bash run_all.sh apple.com
 This will:
 
 * Enumerate subdomains
-* Crawl and collect URLs
-* Discover JS files and endpoints
-* Find parameters
-* Scan for known vulnerabilities (CVE, misconfigs)
-* Check for sensitive extensions
-* Port scan the discovered subdomains
+* Resolve and clean IPs
+* Crawl for URLs and JS
+* Extract params
+* Scan for CVEs & sensitive files
+* Fuzz redirects/SSRF
+* Scan open ports
 
 ---
 
 ## 📂 Output Folder Structure
 
-| File / Folder                     | Description                          |
-| --------------------------------- | ------------------------------------ |
-| `output/subdomains.txt`           | All discovered subdomains            |
-| `output/all_urls.txt`             | Collected URLs from tools            |
-| `output/js_files.txt`             | JS file URLs                         |
-| `output/js_endpoints.txt`         | JS endpoints from LinkFinder         |
-| `output/params.txt`               | Params from Arjun                    |
-| `output/xss_params.txt`           | XSS params via gf                    |
-| `output/sqli_params.txt`          | SQLi params via gf                   |
-| `output/nuclei_hits.txt`          | Vulnerabilities found by Nuclei      |
-| `output/interesting_urls.txt`     | Login, admin, upload, reset, etc     |
-| `output/sensitive_files.txt`      | Leaky files like `.git`, `.env`, etc |
-| `output/portscan/naabu_ports.txt` | Open ports per IP (via naabu)        |
+| File / Folder                        | Description                                              |
+| ------------------------------------ | -------------------------------------------------------- |
+| `subdomains.txt`                     | Raw subdomains from tools                                |
+| `resolved_dnsx.txt`                  | `dnsx` output with A records                             |
+| `clean_subdomains.txt`               | Subdomains only (cleaned, no IPs)                        |
+| `http_subdomains.txt`                | Formatted for URL tools (http/https)                     |
+| `all_urls.txt`                       | Combined output from gau, waybackurls, hakrawler, katana |
+| `js_files.txt`                       | Extracted JS URLs                                        |
+| `js_endpoints.txt`                   | JS endpoints found via LinkFinder                        |
+| `params.txt`                         | Parameters found via Arjun                               |
+| `xss_params.txt` / `sqli_params.txt` | Gf-matched interesting params                            |
+| `nuclei_hits.txt`                    | Vulnerability scan results                               |
+| `interesting_urls.txt`               | URLs containing keywords like login, admin, etc.         |
+| `api_endpoints.txt`                  | Found Swagger, GraphQL, Postman docs                     |
+| `sensitive_files.txt`                | URLs ending with .env, .git, .xml, etc.                  |
+| `fuzzable_params.txt`                | URLs fuzzed for SSRF or open redirects                   |
+| `dom_xss.txt`                        | Raw JS lines with potential DOM sinks                    |
+| `portscan/naabu_ports.txt`           | Open ports found via naabu                               |
+| `screenshots/` *(optional)*          | Aquatone screenshots                                     |
+| `subzy_takeovers.txt` *(optional)*   | Subdomain takeover results                               |
 
 ---
 
-## ✅ Automated Tasks
+## ✅ Automatically Handled by `run_all.sh`
 
-✅ These modules run automatically from `run_all.sh`:
-
-* Subdomain enumeration
-* URL crawling and JS collection
-* Parameter discovery
-* Nuclei scanning (CVEs, vulnerabilities)
-* Sensitive file & extension checks
-* SSRF/Open Redirect fuzzing
-* DOM XSS grep
-* Port scanning (`dnsx`, `naabu`)
+* Subdomain enum & DNS resolution
+* URL crawling & JS discovery
+* Param extraction & vuln scanning
+* Fuzzing & grep-based analysis
+* Port scanning (naabu)
+* Directory structure and deduplication
 
 ---
 
-## ✍️ Manual Inputs or Optional Runs
+## ✍️ Manual/Optional Steps
 
-🟡 These steps require manual trigger/input:
-
-* **Target domain** → You must pass it to `run_all.sh`
+* `subzy` (for takeover check):
 
   ```bash
-  bash run_all.sh target.com
+  subzy run --targets output/clean_subdomains.txt --hide_fails > output/subzy_takeovers.txt
   ```
 
-* **Aquatone visual recon** → Requires browser install and large setup
-
-* **Subdomain takeover (subzy)** → Run manually if needed
+* `aquatone` (visual recon)
 
   ```bash
-  subzy run --targets output/subdomains.txt --hide_fails > output/subzy_takeovers.txt
+  cat output/clean_subdomains.txt | aquatone -out output/screenshots/
   ```
-
-* **Deep fuzzing or auth-based scans** → Out of scope for automation
-
----
-
-## 📌 Requirements
-
-* Go (for most tools)
-* Python 3 (for LinkFinder)
-* Bash, curl, git
-* GNU/Linux or WSL/Termux recommended
 
 ---
 
@@ -138,11 +130,12 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 🧠 Author
 
-**Muthu D** – [GitHub](https://github.com/imuthud) | Recon enthusiast | Bug bounty hunter
+**Muthu D** – [GitHub](https://github.com/imuthud)
+Bug bounty hunter | Recon enthusiast | Web security researcher
 
 ```
 
 ---
 
-Would you like me to push this to your repo as a PR (instructions), or do you want a `.md` file to copy and paste directly?
+Let me know if you want me to bundle this updated `README.md` into your `.zip` or repo-ready folder.
 ```
